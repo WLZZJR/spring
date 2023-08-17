@@ -792,6 +792,11 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 		if (beanDefinition instanceof AbstractBeanDefinition) {
 			try {
+				/**
+				 * 注册前的最后一次校验，这里的校验不同于之前 XML 文件校验
+				 * 主要是对于 AbstractBeanDefinition属性中的methodOverrides 校验
+				 * 校验methodOverrides是否与工厂方法并存或者methodOverrides对应的方法根本不存在
+				 */
 				((AbstractBeanDefinition) beanDefinition).validate();
 			}
 			catch (BeanDefinitionValidationException ex) {
@@ -803,7 +808,9 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		BeanDefinition oldBeanDefinition;
 
 		oldBeanDefinition = this.beanDefinitionMap.get(beanName);
+		//处理注册已经注册的 beanName 情况
 		if (oldBeanDefinition != null) {
+			//如果对应的 BeanName 已经注册且在配置中配置了 bean 不允许被覆盖 ，贝IJ抛出异常
 			if (!isAllowBeanDefinitionOverriding()) {
 				throw new BeanDefinitionStoreException(beanDefinition.getResourceDescription(), beanName,
 						"Cannot register bean definition [" + beanDefinition + "] for bean '" + beanName +
