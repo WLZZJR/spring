@@ -39,6 +39,9 @@ class TestSourceSetDependenciesPlugin implements Plugin<Project> {
 			}
 		}
 	}
+	//资产是指企业用户具有货币价值的任何事物
+	//负债是指限时需要偿还的债务
+	//资产=负债+所有者权益
 
 	private void collectProjectDependencies(Set<ProjectDependency> projectDependencies, Project project) {
 		for (def configurationName in ["compile", "optional", "provided", "testCompile"]) {

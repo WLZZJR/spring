@@ -283,6 +283,13 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				throw new BeanCurrentlyInCreationException(beanName);
 			}
 
+
+			/**
+			 * singletonObjects:用户保存BeaName 和创建bean实例之间的关系
+			 * singletonFactroies:保存 BeanName 和创建 bean 的工厂之间的关系，
+			 * earlySingetonObjects:是保存 BeanName 和创建 bean 实例之间的关系,singletonObects 的不同之处在于，当一个单 bean 被放到这里面后，那么当 bean
+			 * 在创建过程中，就可以通过 getBean 方法获取到了，其目的是用来检测循环引用
+			 */
 			// Check if bean definition exists in this factory.
 			BeanFactory parentBeanFactory = getParentBeanFactory();
 			//如果beanDefinitionMap中也就是在所有已经加载的类中不包括beanName则尝试从 parentBeanFactory中检测
@@ -1636,6 +1643,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	protected Object getObjectForBeanInstance(
 			Object beanInstance, String name, String beanName, @Nullable RootBeanDefinition mbd) {
 
+		//如果指定的name是工厂相关（以＆为前缀） beanInstance 又不是 FactoryBean 类型则验证不通过
 		// Don't let calling code try to dereference the factory if the bean isn't a factory.
 		if (BeanFactoryUtils.isFactoryDereference(name) && !(beanInstance instanceof FactoryBean)) {
 			throw new BeanIsNotAFactoryException(transformedBeanName(name), beanInstance.getClass());
@@ -1659,7 +1667,15 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			if (mbd == null && containsBeanDefinition(beanName)) {
 				mbd = getMergedLocalBeanDefinition(beanName);
 			}
+
+			//是否用户定义的而不是应用程序本身定义的
 			boolean synthetic = (mbd != null && mbd.isSynthetic());
+			/**
+			 * 对FactroyBean正确行的验证
+			 * 对非 Factory Bean 不做任何处理
+			 * 对bean进行转换
+			 * 将从 Factory 中解析 bean 托给 getObjectFromFactoryBean
+			 */
 			object = getObjectFromFactoryBean(factory, beanName, !synthetic);
 		}
 		return object;

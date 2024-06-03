@@ -18,6 +18,8 @@ package org.springframework.core.env;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -662,6 +664,13 @@ public class EnvironmentSystemIntegrationTests {
 		public static final String PROD_ENV_NAME = "prod";
 		public static final String DEV_ENV_NAME = "dev";
 		public static final String DERIVED_DEV_ENV_NAME = "derivedDev";
+	}
+
+
+
+	@Test
+	public void test(){
+		List list=new ArrayList();
 	}
 
 }
